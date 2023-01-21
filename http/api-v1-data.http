@@ -1,0 +1,10 @@
+# String 데이터 수집
+POST {{host}}/api/v1/data/string
+X-Secret-Key: thisissecretkey
+Content-Type: application/json
+
+{
+  "prodType" : "elastic-search-study",
+  "dataType" : "json-sample",
+  "data" : "{\"key\" : \"value\", \"arr\" : [1, 2, 3], \"subObj\" : {\"sub-key\":\"sub-value\"}}"
+}
