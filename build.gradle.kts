@@ -1,10 +1,13 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
 
 plugins {
     id("org.springframework.boot") version "3.0.2"
     id("io.spring.dependency-management") version "1.1.0"
     kotlin("jvm") version "1.7.22"
     kotlin("plugin.spring") version "1.7.22"
+
+    id("com.google.cloud.tools.jib") version "3.3.1"
 }
 
 group = "io.hoon"
@@ -39,4 +42,21 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+jib {
+    from {
+        image = "eclipse-temurin:17-jdk"
+    }
+
+    to {
+        image = "chiwoo2074/${project.name}"
+        tags = setOf("latest", project.version.toString().toLowerCaseAsciiOnly())
+    }
+
+    container {
+        jvmFlags = listOf("-XX:+UseContainerSupport", "-Dserver.port=8080", "-Dfile.encoding=UTF-8")
+
+        ports = listOf("8080")
+    }
 }
