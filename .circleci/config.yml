@@ -11,9 +11,6 @@ executors:
           # visit app.circleci.com/settings/project/github/ParkIlHoon/data-collector/environment-variables
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
-    environment:
-      DOCKER_HUB_USER: $DOCKER_HUB_USER
-      DOCKER_HUB_PASS: $DOCKER_HUB_PASS
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
@@ -36,6 +33,7 @@ jobs:
       - run:
           name: Docker Image Build
           command: |
+            echo "$DOCKER_HUB_PASS" | docker login -u "$DOCKER_HUB_USER" --password-stdin
             ./gradlew jib
 
 # Invoke jobs via workflows
