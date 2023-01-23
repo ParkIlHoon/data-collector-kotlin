@@ -38,8 +38,7 @@ jobs:
       - run:
           name: Docker Image Build
           command: |
-            echo "$DOCKER_HUB_PASS" | docker login -u "$DOCKER_HUB_USER" --password-stdin
-            ./gradlew jib
+            ./gradlew jib -Djib.to.auth.username=$DOCKER_HUB_USER -Djib.to.auth.password=$DOCKER_HUB_PASS
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
