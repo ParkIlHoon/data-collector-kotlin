@@ -46,12 +46,7 @@ tasks.withType<Test> {
 }
 
 tasks.test {
-    extensions.configure(JacocoTaskExtension::class) {
-        destinationFile = file("$buildDir/jacoco/jacoco.exec")
-    }
-
     useJUnitPlatform()
-
     finalizedBy(tasks.jacocoTestReport)
 }
 
@@ -61,9 +56,9 @@ jacoco {
 
 tasks.jacocoTestReport {
     reports {
-        xml.isEnabled = true
-        html.isEnabled = true
-        csv.isEnabled = false
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
     }
 }
 
