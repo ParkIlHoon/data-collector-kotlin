@@ -36,7 +36,6 @@ jobs:
       - run:
           name: Docker Image Build
           command: |
-            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
             ./gradlew jib
 
 # Invoke jobs via workflows
