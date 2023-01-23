@@ -2,8 +2,12 @@
 # See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
+orbs:
+  gradle: circleci/gradle@3.0.0
+
 executors:
   docker-executor:
+    resource_class: medium
     docker:
       - image: eclipse-temurin:17-jdk
         auth:
@@ -12,30 +16,21 @@ executors:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASSWORD
 
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
-jobs:
-  build-image:
-    executor: docker-executor
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
-    steps:
-      - checkout
-      - run:
-          name: Running Tests
-          command: ./gradlew test
-      - run:
-          name: Build
-          command: ./gradlew build
-      - run:
-          name: Docker Image Build
-          command: |
-            docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
-            ./gradlew jib
-
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
   docker-image-build-workflow:
     jobs:
-      - build-image
+      - gradle/run:
+          name: Build
+          executor: docker-executor
+      - gradle/run:
+          name: JIB push
+          executor: docker-executor
+          command: jib
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - Build
