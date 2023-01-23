@@ -8,6 +8,7 @@ plugins {
     kotlin("plugin.spring") version "1.7.22"
 
     id("com.google.cloud.tools.jib") version "3.3.1"
+    id("jacoco")
 }
 
 group = "io.hoon"
@@ -42,6 +43,28 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.test {
+    extensions.configure(JacocoTaskExtension::class) {
+        destinationFile = file("$buildDir/jacoco/jacoco.exec")
+    }
+
+    useJUnitPlatform()
+
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+jacoco {
+    toolVersion = "0.8.6"
+}
+
+tasks.jacocoTestReport {
+    reports {
+        xml.isEnabled = true
+        html.isEnabled = true
+        csv.isEnabled = false
+    }
 }
 
 jib {
